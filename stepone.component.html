@@ -1,0 +1,366 @@
+<div class="container">
+    <div class="card card_padding_custom">
+        <form class="" [formGroup]='formStep1'>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Type of Service</label>
+                        <select name="" id="" class="form-control custom-select" formControlName="option" (change)="onChangeType($event.target.value)">
+                            <option value="From the Airport">From the Airport</option>
+                            <option value="To the Airport">To the Airport</option>
+                            <option value="Hourly Service">Hourly Service</option>
+                            <option value="Door to Door">Door to Door</option>
+                        </select>
+                        <div *ngIf="step1formDataControl.option.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.option.touched && step1formDataControl.option.errors.required">
+                                <small>! This field is required</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Pickup</label>
+                        <input  *ngIf="!isAirportSelected" type="text" class="form-control" placeholder="Pickup Location" (place_changed)="pickupChanged($event)"  formControlName="pickupLocation" places-auto-complete/>
+                        <select *ngIf="toTheAirport" *ngFor="let place in dropAndPickLocation" (change)="preDefinedToAndFromAirport(place))"  formControlName="pickupLocation">
+                            <option value="place.coordinates">
+                                {{place.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div *ngIf="step1formDataControl.pickupLocation.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.pickupLocation.touched && step1formDataControl.pickupLocation.errors.required">
+                                <small>! Pickup Location is required</small>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Drop</label>
+                        <input *ngIf="!isAirportSelected" type="text" class="form-control" placeholder="Drop Location" (place_changed)="dropChanged($event)"  formControlName="dropLocation" places-auto-complete/>
+                        <select *ngIf="fromTheAirport" *ngFor="let place in dropAndPickLocation" (change)="preDefinedToAndFromAirport(place))"  formControlName="dropLocation">
+                            <option value="place.coordinates">
+                                {{place.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div *ngIf="step1formDataControl.dropLocation.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.dropLocation.touched && step1formDataControl.dropLocation.errors.required">
+                                <small>! Drop location is required</small>
+                            </div>
+                        </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Date</label>
+                        <input type="date" class="form-control" placeholder="Date"  formControlName="date" [min]="currentDate" (change)="onChangeDate($event)"/>
+                    </div>
+                    <div *ngIf="step1formDataControl.date.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.date.touched && step1formDataControl.date.errors.required">
+                                <small>! Date is required</small>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Time</label>
+                        <input type="time" class="form-control"  formControlName="time" (change)="onChangeTime($event.target.value)"/>
+                    </div>
+                    <div *ngIf="step1formDataControl.time.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.time.touched && step1formDataControl.time.errors.required">
+                                <small>! Time is required</small>
+                            </div>
+                        </div>
+                </div>
+                <!-- <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Passengers</label>
+                        <select name="" id="" class="form-control custom-select"  formControlName="passengers" >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                        </select>
+                    </div>
+                    <div *ngIf="step1formDataControl.passengers.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.passengers.touched && step1formDataControl.passengers.errors.required">
+                                <small>! Passengers is required</small>
+                            </div>
+                        </div>
+                        
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Luggage</label>
+                        <select name="" id="" class="form-control custom-select"  formControlName="luggage">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                    <div *ngIf="step1formDataControl.luggage.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.luggage.touched && step1formDataControl.luggage.errors.required">
+                                <small>This field is required</small>
+                            </div>
+                        </div>
+                </div> -->
+                
+                <!-- <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Child Seat <span *ngIf="extraDataAvailable">(${{extras['child-seat']['cost-per-item']}})</span></label>
+                        <select name="" id="" class="form-control custom-select"  formControlName="child-seat"  *ngIf='extraDataAvailable' (change)="onChangeChildSeat()" >
+                            <option value="0" value="{{data}}" *ngFor="let data of extras['child-seat']['values']">{{data}}</option>
+                        </select>
+                    </div>
+                    
+                </div> -->
+                
+                
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="" >Select Vehicles</label>
+                        <select class="custom-select"  formControlName="selectedVehicle" (change)="onChangeVehicle($event)">
+                            <option value="{{data.key}}" *ngFor="let data of productList | keyvalue"> {{data.value.name}} </option>
+                        </select>
+                    </div>
+                    <div *ngIf="step1formDataControl.selectedVehicle.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.selectedVehicle.touched && step1formDataControl.selectedVehicle.errors.required">
+                                <small>! This field is required</small>
+                            </div>
+                        </div>
+                </div>
+                
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Special Note</label>
+                        <textarea class="form-control" placeholder="Your note here..."  formControlName="specialNote"></textarea>
+                    </div>
+                </div>
+
+                
+                <div class="col-md-6" *ngIf="isAirportSelected">
+                    <div class="form-group" >
+                        <label class="label-ui-1" for="" >Airline</label>
+                        <input type="text" class="form-control" placeholder="Airline"  formControlName = "airline"/>
+                    </div>
+                    <div *ngIf="step1formDataControl.airline.errors">
+                        <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.airline.touched && step1formDataControl.airline.errors.required">
+                            <small>! This field is required</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" *ngIf="isAirportSelected">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="" >Flight</label>
+                        <input type="text" class="form-control" placeholder="Flight"  formControlName = "flight"/>
+                    </div>
+                    <div *ngIf="step1formDataControl.flight.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.flight.touched && step1formDataControl.flight.errors.required">
+                                <small>! This field is required</small>
+                            </div>
+                        </div>
+                </div>
+                
+                
+                
+                <div class="col-md-6" *ngIf="selectedTypeValue === 'pay-by-hour'">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="" >Hours</label>
+                        <input type="number" (keyup)="onChangeHours($event.target.value)" class="form-control" min="2" placeholder="E.g: 12"  formControlName="hours"/>
+                    </div>
+                    <div *ngIf="step1formDataControl.hours.errors">
+                            <div class=" alert alert-danger p-1" *ngIf="step1formDataControl.hours.touched && step1formDataControl.hours.errors.required">
+                                <small>! Hour is required</small>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="accordion" id="accordionExample">
+                        <div class="card">
+                            <div class="card-header p-0" id="headingOne">
+                                <h2 class="mb-0" style="line-height: 1;">
+                                    <button class="btn w-100" type="button" data-toggle="collapse" data-target="#collapseOne"
+                                        aria-expanded="true" aria-controls="collapseOne">
+                                        + Add Extras
+                                    </button>
+                                </h2>
+                            </div>
+                
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                
+                                <div class="card p-3">
+                                    <div class="row">
+                
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="label-ui-1" for="">Toddler Seat <span
+                                                        *ngIf="extraDataAvailable">(${{extras['toddler-seat']['cost-per-item']}})</span></label>
+                                                <select name="" id="" class="form-control custom-select" formControlName="toddler-seat"
+                                                    *ngIf='extraDataAvailable' (change)="onChangeChildSeat()">
+                                                    <option value="0" value="{{data}}"
+                                                        *ngFor="let data of extras['toddler-seat']['values']">
+                                                        {{data}}</option>
+                                                </select>
+                                            </div>
+                
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="label-ui-1" for="">Infant Seat <span
+                                                        *ngIf="extraDataAvailable">(${{extras['infant-seat']['cost-per-item']}})</span></label>
+                                                <select name="" id="" class="form-control custom-select" formControlName="infant-seat"
+                                                    *ngIf='extraDataAvailable' (change)="onChangeChildSeat()">
+                                                    <option value="0" value="{{data}}"
+                                                        *ngFor="let data of extras['infant-seat']['values']">{{data}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="label-ui-1" for="">Booster Seat <span
+                                                        *ngIf="extraDataAvailable">(${{extras['booster-seat']['cost-per-item']}})</span></label>
+                                                <select name="" id="" class="form-control custom-select" formControlName="booster-seat"
+                                                    *ngIf='extraDataAvailable' (change)="onChangeChildSeat()">
+                                                    <option value="0" value="{{data}}"
+                                                        *ngFor="let data of extras['booster-seat']['values']">
+                                                        {{data}}</option>
+                                                </select>
+                                            </div>
+                
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="label-ui-1" for="">Extra Stops <span
+                                                        *ngIf="extraDataAvailable">(${{extras['extra-stops']['cost-per-item']}})</span></label>
+                                                <select name="" id="" class="form-control custom-select" formControlName="extra-stops"
+                                                    *ngIf='extraDataAvailable' (change)="onChangeExtraStops()">
+                                                    <option value="{{data}}" *ngFor="let data of extras['extra-stops']['values']">
+                                                        {{data}}</option>
+                                                </select>
+                                            </div>
+                
+                                        </div>
+                                        <div class="col-md-4" *ngIf="extras && gateMeetVisibility">
+                                            <div class="form-group">
+                                                <label class="label-ui-1" for="">Gate Meet <span
+                                                        *ngIf="extraDataAvailable">(${{extras['gate-meet']['cost-per-item']}})</span></label>
+                                                <input formControlName="gate-meet" type="checkbox" (change)="onChangeGateMeet()" />
+                                            </div>
+                
+                                        </div>
+                                    </div>
+                                </div>
+                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Name</label>
+                        <input type="text" class="form-control" placeholder="Full Name" formControlName="name" />
+                        <div *ngIf="step1formDataControl.name.errors">
+                            <div class=" alert alert-danger p-1"
+                                *ngIf="step1formDataControl.name.touched && step1formDataControl.name.errors.required">
+                                <small>! Name is required</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Contact Number</label>
+                        <input type="number" class="form-control" placeholder="contact number" formControlName="contactNumber" />
+                        <div *ngIf="step1formDataControl.contactNumber.errors">
+                            <div class=" alert alert-danger p-1"
+                                *ngIf="step1formDataControl.contactNumber.touched && step1formDataControl.contactNumber.errors.required">
+                                <small>! contact Number is required</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label-ui-1" for="">Email address</label>
+                        <input type="email" class="form-control" placeholder="example@yourmail.com" formControlName="email" />
+                    </div>
+                    <div *ngIf="step1formDataControl.email.errors">
+                        <div class=" alert alert-danger p-1"
+                            *ngIf="step1formDataControl.email.touched && step1formDataControl.email.errors.required">
+                            <small>! Email address is required</small>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <!-- <div class="card p-2">
+                    <label for="">Total Payable: </label>
+                    <h5>$ {{totalPrice}}</h5>
+                </div> -->
+                <div class="price_card alert-info">
+                    <b>Pay by Card: </b>{{totalPrice | currency: 'USD'}}
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <!-- <div class="card p-2">
+                    <label for="">Pay By cash (10% off): </label>
+                    <h5>$ {{discountedPrice}}</h5>
+                </div> -->
+                <div class="price_card alert-info">
+                    <b>Pay by Cash: </b>{{discountedPrice | currency: 'USD'}}
+                </div>
+                <p class="note_pay">10% off applied</p>
+            </div>
+            <div class="col-md-6 mb-3" *ngIf="selectedTypeValue == 'pay-by-distance'">
+                <div class="card p-2">
+                    <label for="">Total Distance </label>
+                    <h5>{{distanceCalculated}} miles</h5>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3"  *ngIf="selectedTypeValue == 'pay-by-hour'">
+                <div class="card p-2">
+                    <label for="">Total hours </label>
+                    <h5>{{totalHours}} hours.</h5>
+                </div>
+            </div>
+            
+        </div>
+        <div class="button_container t_right">
+            <button type="button" class="btn btn_2" (click)="submitFormOne()">Next</button>
+        </div>
+    </div>
+</div>
+
+<app-loader *ngIf="isLoading"></app-loader>
